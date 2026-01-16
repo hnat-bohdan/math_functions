@@ -2,7 +2,7 @@ import math
 def mean_a(a, b):
     return (a + b) / 2
 
-def meen_g(a, b):
+def mean_g(a, b):
     return math.sqrt(a * b)
 
 def math_function(func_type: str, x: list[float], y: list[float], xi: float, precision: int) -> float:
@@ -13,13 +13,13 @@ def math_function(func_type: str, x: list[float], y: list[float], xi: float, pre
             mean2 = mean_a
         case "exponential":
             mean1 = mean_a
-            mean2 = meen_g
+            mean2 = mean_g
         case "logarithmic":
-            mean1 = meen_g
+            mean1 = mean_g
             mean2 = mean_a
         case "power":
-            mean1 = meen_g
-            mean2 = meen_g
+            mean1 = mean_g
+            mean2 = mean_g
 
     #calcolo
     while (abs(y[0]- y[1]) > 10 ** (-precision)):
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     print(f"x: {x}")
     print(f"y: {y}")
 
-    # x per cui vogiamo trovare il risultato
+    # x per cui vogliamo trovare il risultato
     xi = math.sqrt(2) 
     print(f"y: {xi}") 
 
@@ -111,4 +111,5 @@ if __name__ == "__main__":
     #oppure input manuale
     result = math_function(*input_data())
     print("-"*15)
+
     print(f"Result: {result}")
