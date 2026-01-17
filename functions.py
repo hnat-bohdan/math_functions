@@ -4,27 +4,78 @@ def mean_a(a, b):
 
 def mean_g(a, b):
     return math.sqrt(a * b)
+def next_value_a(a, b):
+
+    """
+    Calcola il prossimo valore nella sequenza aritmetica del tipo: ..., a, b, valore desiderato.
+    Se vuoi trovare il prossimo valore da parte sinistra cambia a e b di posto.
+    
+    """
+    return 2*b - a
+
+def next_value_g(a, b):
+    """
+    Calcola il prossimo valore nella sequenza geometrica di tipo: ..., a, b, valore desiderato.
+    Se vuoi trovare il prossimo valore da parte sinistra cambia a e b di posto.
+    
+    """
+    return b**2 / a
 
 def math_function(func_type: str, x: list[float], y: list[float], xi: float, precision: int) -> float:
-    #scegliamo il tipo di funzione
+    #scelta delle funzioni per trovare le medie per x e y 
     match func_type:
-        case "linear":
-            mean1 = mean_a
-            mean2 = mean_a
-        case "exponential":
-            mean1 = mean_a
-            mean2 = mean_g
-        case "logarithmic":
-            mean1 = mean_g
-            mean2 = mean_a
-        case "power":
-            mean1 = mean_g
-            mean2 = mean_g
+            case "linear":
+                mean_x = mean_a
+                mean_y = mean_a
+            case "exponential":
+                mean_x = mean_a
+                mean_y = mean_g
+            case "logarithmic":
+                mean_x = mean_g
+                mean_y = mean_a
+            case "power":
+                mean_x = mean_g
+                mean_y = mean_g
+        
+    #calcolo dell'intervallo iniziale
+    if xi > max(x) or xi < min(x):
+        going_right: bool = xi > max(x)
 
+        #scelta delle funzioni per trovare i prossimo valori per x e y
+        match func_type:
+            case "linear":
+                next_value_x = next_value_a
+                next_value_y = next_value_a
+            case "exponential":
+                next_value_x = next_value_a
+                next_value_y = next_value_g
+            case "logarithmic":
+                next_value_x = next_value_g
+                next_value_y = next_value_a
+            case "power":
+                next_value_x = next_value_g
+                next_value_y = next_value_g
+
+
+        while xi > max(x) or xi < min(x):
+            if going_right:
+                tx = next_value_x(x[0], x[1])
+                ty = next_value_y(y[0], y[1])
+                # x[0] = x[1]
+                # y[0] = y[1]
+                x[1] = tx
+                y[1] = ty
+            else:
+                tx = next_value_x(x[1], x[0])
+                ty = next_value_y(y[1], y[0])
+                # x[1] = x[0]
+                # y[1] = y[0]
+                x[0] = tx
+                y[0] = ty
     #calcolo
     while (abs(y[0]- y[1]) > 10 ** (-precision)):
-        tx = mean1(x[0], x[1])
-        ty = mean2(y[0], y[1])
+        tx = mean_x(x[0], x[1])
+        ty = mean_y(y[0], y[1])
         if xi < tx:
             x[1] = tx
             y[1] = ty
@@ -32,7 +83,7 @@ def math_function(func_type: str, x: list[float], y: list[float], xi: float, pre
             x[0] = tx
             y[0] = ty
 
-    return round(mean2(y[0], y[1]), precision)
+    return round(mean_y(y[0], y[1]), precision)
 
 
 def input_data() ->  tuple[str, list[float], list[float], float, int]:
@@ -51,6 +102,15 @@ def input_data() ->  tuple[str, list[float], list[float], float, int]:
 
         # controlli
         #da fare un giorno
+        match i:
+            case 0: #"linear":
+                pass
+            case 1: #"exponential":
+                pass
+            case 2: #"logarithmic":
+                pass
+            case 3: #"power":
+                pass
 
         x.append(xj)
         y.append(yj)
@@ -64,7 +124,7 @@ def input_data() ->  tuple[str, list[float], list[float], float, int]:
     print(f"Puoi inserire un valore speciale per x: {SPECIAL_VALUES.keys()}")
 
     xi = math.inf
-    while xi < min(x) or xi > max(x):
+    while xi == math.inf:
         xi = input(f"Inserisci il valore di x per cui calcolare la funzione\n(deve essere compreso tra {min(x)} e {max(x)}):\n")
         if xi in SPECIAL_VALUES.keys():
             xi = SPECIAL_VALUES[xi]
@@ -92,8 +152,8 @@ if __name__ == "__main__":
     print(f"y: {y}")
 
     # x per cui vogliamo trovare il risultato
-    xi = math.sqrt(2) 
-    print(f"y: {xi}") 
+    xi = -500
+    print(f"xi: {xi}") 
 
     # tipo di funzione: linear, exponential, logarithmic, power
     # cambi valore di i:    0         1           2          3
@@ -102,14 +162,17 @@ if __name__ == "__main__":
     print(f"Funzione: {func_type[i]}")
     
     #precisione: a quante cifre dopo la virgola deve essere approsimato il risultato
-    precision = 3
-    print(f"Precisione: {precision} cifre dopo la virgola")
+    precision = -1
+    if precision > 0:
+        print(f"Precisione: {precision} cifre dopo la virgola")
+    else:
+        print(f"Precisione: fino a {10 ** (-precision)}")
     result = math_function(func_type[i], x, y, xi, precision)
     print(f"Result: {result}")
     print("-"*15)
 
     #oppure input manuale
-    result = math_function(*input_data())
+    #result = math_function(*input_data())
     print("-"*15)
 
     print(f"Result: {result}")
