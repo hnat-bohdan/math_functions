@@ -3,7 +3,12 @@ def mean_a(a, b):
     return (a + b) / 2
 
 def mean_g(a, b):
-    return math.sqrt(a * b)
+    if a > 0 and b > 0:
+        return math.sqrt(a * b)
+    # per le progressioni geometriche con valori negativi
+    if a < 0 and b < 0:
+        return -math.sqrt(a * b)
+    raise ValueError("I valori per la media geometrica devono essere entrambi positivi o entrambi negativi.")
 def next_value_a(a, b):
 
     """
@@ -36,10 +41,16 @@ def math_function(func_type: str, x: list[float], y: list[float], xi: float, pre
             case "power":
                 mean_x = mean_g
                 mean_y = mean_g
-        
+
+    #ordinamento dei punti in modo crescente in basea a x
+    # perché altrimenti non funziona hhaha
+    if x[0] > x[1]:
+        x[0], x[1] = x[1], x[0]
+        y[0], y[1] = y[1], y[0]
+
     #calcolo dell'intervallo iniziale
     if xi > max(x) or xi < min(x):
-        going_right: bool = xi > max(x)
+        going_right: bool = abs(xi - x[1]) < abs(xi - x[0])
 
         #scelta delle funzioni per trovare i prossimo valori per x e y
         match func_type:
@@ -85,7 +96,6 @@ def math_function(func_type: str, x: list[float], y: list[float], xi: float, pre
 
     return round(mean_y(y[0], y[1]), precision)
 
-
 def input_data() ->  tuple[str, list[float], list[float], float, int]:
     x, y = [], []
 
@@ -121,11 +131,11 @@ def input_data() ->  tuple[str, list[float], list[float], float, int]:
         "pi": math.pi,
         "sqrt2": math.sqrt(2)
     }
-    print(f"Puoi inserire un valore speciale per x: {SPECIAL_VALUES.keys()}")
+    print(f"Puoi inserire un valore speciale per x: {SPECIAL_VALUES}")
 
     xi = math.inf
     while xi == math.inf:
-        xi = input(f"Inserisci il valore di x per cui calcolare la funzione\n(deve essere compreso tra {min(x)} e {max(x)}):\n")
+        xi = input(f"Inserisci il valore di x per cui calcolare la funzione\n")
         if xi in SPECIAL_VALUES.keys():
             xi = SPECIAL_VALUES[xi]
         else:
@@ -146,7 +156,7 @@ def input_data() ->  tuple[str, list[float], list[float], float, int]:
 if __name__ == "__main__":
     #valori
     print("Esempio con valori preimpostati:")
-    x = [1, 3]
+    x = [-1, -3]
     y = [4, 12]
     print(f"x: {x}")
     print(f"y: {y}")
@@ -172,7 +182,7 @@ if __name__ == "__main__":
     print("-"*15)
 
     #oppure input manuale
-    #result = math_function(*input_data())
+    result = math_function(*input_data())
     print("-"*15)
 
     print(f"Result: {result}")
